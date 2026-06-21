@@ -1,0 +1,159 @@
+.leave-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  transition: all var(--transition-base);
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  }
+
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  &__type {
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    color: var(--color-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  &__body {
+    display: flex;
+    align-items: center;
+    gap: var(--space-lg);
+  }
+
+  &__ring-wrap {
+    flex-shrink: 0;
+  }
+
+  &__badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    background: var(--color-primary-light);
+    color: var(--color-primary);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    flex-shrink: 0;
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    &--info {
+      background: var(--color-neutral-bg);
+      color: var(--color-text-secondary);
+    }
+  }
+
+  &__stats {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+  }
+
+  &__stat {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: var(--font-size-sm);
+  }
+
+  &__stat-label {
+    color: var(--color-text-secondary);
+  }
+
+  &__stat-value {
+    font-weight: 600;
+    color: var(--color-text-primary);
+
+    &--balance {
+      color: var(--color-primary);
+    }
+  }
+
+  &__chips {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  &__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: var(--radius-pill);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+
+    &--exhausted {
+      background: var(--color-danger-bg);
+      color: var(--color-danger-text);
+    }
+
+    &--low {
+      background: var(--color-warning-bg);
+      color: var(--color-warning-text);
+    }
+  }
+}
+
+// ── Progress Ring ─────────────────────────────────────────────────
+.progress-ring {
+  width: 72px;
+  height: 72px;
+  position: relative;
+
+  svg {
+    transform: rotate(-90deg);
+    width: 72px;
+    height: 72px;
+  }
+
+  &__track {
+    fill: none;
+    stroke: var(--color-border);
+    stroke-width: 5;
+  }
+
+  &__fill {
+    fill: none;
+    stroke-width: 5;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  &__text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--color-text-primary);
+  }
+
+  &__unit {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+  }
+}

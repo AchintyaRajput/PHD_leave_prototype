@@ -1,0 +1,96 @@
+.upload-zone {
+  border: 2px dashed var(--color-primary);
+  border-radius: var(--radius-md);
+  padding: var(--space-xl) var(--space-lg);
+  text-align: center;
+  cursor: pointer;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+  background: rgba(0, 101, 101, 0.03);
+
+  &:hover, &.drag-over {
+    background: var(--color-primary-light);
+    border-color: var(--color-primary-dark);
+  }
+
+  &__icon {
+    color: var(--color-primary);
+    margin-bottom: var(--space-sm);
+    display: flex;
+    justify-content: center;
+  }
+
+  &__text {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+  }
+
+  &__browse {
+    cursor: pointer;
+
+    strong {
+      color: var(--color-primary);
+      text-decoration: underline;
+    }
+  }
+
+  &__file-input {
+    display: none;
+  }
+
+  &__hint {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    margin-top: 6px;
+  }
+
+  &__file {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    background: var(--color-primary-light);
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(0, 101, 101, 0.15);
+  }
+
+  &__file-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: var(--font-size-sm);
+    color: var(--color-primary);
+    font-weight: 500;
+  }
+
+  &__file-size {
+    color: var(--color-text-secondary);
+    font-weight: 400;
+  }
+
+  &__file-remove {
+    background: none;
+    border: none;
+    color: var(--color-danger-text);
+    cursor: pointer;
+    padding: 4px 8px;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1;
+    transition: opacity var(--transition-fast);
+    border-radius: 4px;
+
+    &:hover {
+      opacity: 0.7;
+      background: var(--color-danger-bg);
+    }
+  }
+
+  &__error {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--font-size-xs);
+    color: var(--color-danger-text);
+    margin-top: 8px;
+  }
+}

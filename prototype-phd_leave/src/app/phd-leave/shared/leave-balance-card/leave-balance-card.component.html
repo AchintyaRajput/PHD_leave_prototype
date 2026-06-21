@@ -1,0 +1,72 @@
+<div class="leave-card animate-in">
+  <div class="leave-card__header">
+    <span class="leave-card__type">{{ balance.leaveType }}</span>
+  </div>
+
+  <div class="leave-card__body">
+    <!-- Circular Progress Ring -->
+    <div class="leave-card__ring-wrap" *ngIf="showRing">
+      <div class="progress-ring">
+        <svg viewBox="0 0 64 64">
+          <circle class="progress-ring__track" cx="32" cy="32" r="28" />
+          <circle
+            class="progress-ring__fill"
+            cx="32" cy="32" r="28"
+            [attr.stroke]="ringColor"
+            [attr.stroke-dasharray]="circumference"
+            [attr.stroke-dashoffset]="strokeDashoffset"
+          />
+        </svg>
+        <div class="progress-ring__text">
+          {{ displayBalance }}<span class="progress-ring__unit">/{{ displayCredited }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Unlimited Badge (On-Duty) -->
+    <div class="leave-card__badge" *ngIf="balance.isUnlimited">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M18.178 8c5.096 0 5.096 8 0 8-5.095 0-7.133-8-12.739-8-4.585 0-4.585 8 0 8 5.606 0 7.644-8 12.74-8z"/>
+      </svg>
+      <span>Unlimited</span>
+    </div>
+
+    <!-- Note badge (Maternity/Paternity) -->
+    <div class="leave-card__badge leave-card__badge--info" *ngIf="balance.note && !balance.isUnlimited">
+      <span>{{ balance.note }}</span>
+    </div>
+
+    <!-- Stats -->
+    <div class="leave-card__stats">
+      <div class="leave-card__stat">
+        <span class="leave-card__stat-label">Credited</span>
+        <span class="leave-card__stat-value">{{ displayCredited }} {{ unitLabel }}</span>
+      </div>
+      <div class="leave-card__stat">
+        <span class="leave-card__stat-label">Availed</span>
+        <span class="leave-card__stat-value">{{ balance.availed }} {{ unitLabel }}</span>
+      </div>
+      <div class="leave-card__stat" *ngIf="!balance.isUnlimited && balance.balance !== null">
+        <span class="leave-card__stat-label">Balance</span>
+        <span class="leave-card__stat-value leave-card__stat-value--balance">{{ balance.balance }} {{ unitLabel }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Status Chips -->
+  <div class="leave-card__chips">
+    <span class="leave-card__chip leave-card__chip--exhausted" *ngIf="isExhausted">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>
+      </svg>
+      Exhausted
+    </span>
+    <span class="leave-card__chip leave-card__chip--low" *ngIf="isLow">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+        <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+      </svg>
+      Low Balance
+    </span>
+  </div>
+</div>

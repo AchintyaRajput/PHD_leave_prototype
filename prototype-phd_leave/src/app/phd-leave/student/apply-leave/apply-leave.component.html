@@ -1,0 +1,150 @@
+<div class="apply-leave animate-in">
+  <div class="form-card">
+    <h1 class="form-card__title" id="apply-heading">Apply for Leave</h1>
+
+    <form [formGroup]="leaveForm" (ngSubmit)="onSubmit()">
+      <!-- 1. Leave Type -->
+      <div class="form-group">
+        <label class="form-label" for="leave-type">Leave Type <span class="required">*</span></label>
+        <select class="form-select" id="leave-type" formControlName="leaveType" aria-label="Select leave type">
+          <option [ngValue]="null" disabled>Select leave type</option>
+          <option *ngFor="let type of leaveTypes" [ngValue]="type">{{ type }}</option>
+        </select>
+      </div>
+
+      <!-- DYNAMIC: Semester Leave Warning Banner -->
+      <div class="warning-banner-wrapper" [class.visible]="isSemesterLeave">
+        <div class="warning-banner" role="alert">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+          <span>
+            <strong>Warning:</strong> A Semester Leave will pause your academic registration and halt your monthly stipend
+            and financial assistance. You have used <strong>{{ semesterUsed }} of 2</strong> allowed semester leaves.
+          </span>
+        </div>
+      </div>
+
+      <!-- 2. Approver Section -->
+      <div class="form-group">
+        <label class="form-label">Approver(s)</label>
+
+        <!-- Single Approver (default) -->
+        <div *ngIf="!isOnDutyLeave" class="approver-section">
+          <div class="form-readonly-label">Advisor</div>
+          <div class="form-readonly">{{ advisorName }}</div>
+        </div>
+
+        <!-- Multi-Approver (On-Duty) -->
+        <div *ngIf="isOnDutyLeave" class="approver-section approver-multi">
+          <div class="approver-grid">
+            <div class="approver-item">
+              <div class="form-readonly-label">Advisor</div>
+              <div class="form-readonly">{{ advisorName }}</div>
+            </div>
+            <div class="approver-item">
+              <div class="form-readonly-label">TA Instructor</div>
+              <div class="form-readonly">{{ taInstructorName }}</div>
+            </div>
+            <div class="approver-item">
+              <div class="form-readonly-label">PGC Chair</div>
+              <div class="form-readonly">{{ pgcChairName }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. From Date -->
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="from-date">From Date <span class="required">*</span></label>
+          <input class="form-input" type="date" id="from-date" formControlName="fromDate" [min]="today" aria-label="From date">
+        </div>
+
+        <!-- 4. To Date (hidden if half day) -->
+        <div class="form-group" *ngIf="!isHalfDay">
+          <label class="form-label" for="to-date">To Date</label>
+          <input class="form-input" type="date" id="to-date" formControlName="toDate" [min]="leaveForm.get('fromDate')?.value || today" aria-label="To date">
+        </div>
+      </div>
+
+      <!-- 5. Half Day Checkbox + Duration -->
+      <div class="form-group">
+        <div class="form-row-inline">
+          <div class="checkbox-group">
+            <input type="checkbox" id="half-day" formControlName="isHalfDay" aria-label="Half day leave">
+            <label for="half-day">Half Day</label>
+          </div>
+          <div class="duration-display" *ngIf="duration > 0">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+            </svg>
+            Duration: {{ duration }} {{ duration === 1 ? 'working day' : 'working days' }}
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. Reason -->
+      <div class="form-group">
+        <label class="form-label" for="reason">Reason <span class="required">*</span></label>
+        <textarea
+          class="form-textarea"
+          id="reason"
+          formControlName="reason"
+          rows="3"
+          maxlength="500"
+          placeholder="Briefly describe the reason for your leave..."
+          aria-label="Reason for leave"
+        ></textarea>
+        <div class="char-counter"
+          [class.warn]="reasonLength > 400"
+          [class.error]="reasonLength >= 500">
+          {{ reasonLength }} / 500
+        </div>
+      </div>
+
+      <!-- 7. DYNAMIC: Medical Certificate Upload -->
+      <div class="upload-wrapper" [class.visible]="isMedicalLeave">
+        <div class="form-group" *ngIf="isMedicalLeave">
+          <label class="form-label">Medical Certificate <span class="required">*</span></label>
+          <app-file-upload-zone
+            accept=".pdf,.jpg,.jpeg,.png"
+            [maxSizeMB]="5"
+            (fileSelected)="onFileSelected($event)"
+            (fileRemoved)="onFileRemoved()"
+          ></app-file-upload-zone>
+          <div class="form-hint" *ngIf="isMedicalLeave && !uploadedFile">
+            Upload is mandatory for Medical Leave — submit will be disabled until a file is attached.
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="form-actions">
+        <button
+          type="submit"
+          class="btn btn-primary btn-full"
+          [disabled]="!canSubmit"
+          id="submit-leave-btn"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+          </svg>
+          Submit Application
+        </button>
+        <button type="button" class="btn btn-ghost" (click)="onReset()" id="reset-leave-btn">
+          Reset
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast toast--{{ toastType }}" [class.show]="showToast" role="alert">
+    <svg *ngIf="toastType === 'success'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+    <svg *ngIf="toastType === 'error'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+    <svg *ngIf="toastType === 'info'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+    {{ toastMessage }}
+  </div>
+</div>

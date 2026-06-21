@@ -1,0 +1,59 @@
+<div class="pending-approvals animate-in">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-header__left">
+      <h1 class="page-header__title" id="pending-heading">Pending Approvals</h1>
+      <span class="page-header__subtitle">Review and act on pending leave requests.</span>
+    </div>
+  </div>
+
+  <!-- Data Table -->
+  <div class="table-section" *ngIf="pendingRequests.length > 0">
+    <div class="table-scroll">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Student Name</th>
+            <th>Roll No.</th>
+            <th>Leave Type</th>
+            <th>Applied On</th>
+            <th>From Date</th>
+            <th>To Date</th>
+            <th>Duration</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            *ngFor="let req of pendingRequests"
+            class="clickable-row"
+            (click)="navigateToStudent(req.studentRollNo!)"
+            [id]="'pending-row-' + req.id"
+          >
+            <td class="td-name">{{ req.studentName }}</td>
+            <td>{{ req.studentRollNo }}</td>
+            <td class="td-type">{{ req.leaveType }}</td>
+            <td>{{ req.appliedOn | date:'d MMM yyyy' }}</td>
+            <td>{{ req.fromDate | date:'d MMM yyyy' }}</td>
+            <td>{{ req.toDate | date:'d MMM yyyy' }}</td>
+            <td>{{ formatDuration(req) }}</td>
+            <td>
+              <app-status-pill [status]="req.status"></app-status-pill>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="pendingRequests.length === 0">
+    <div class="empty-state__icon">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+      </svg>
+    </div>
+    <div class="empty-state__title">No pending requests.</div>
+    <div class="empty-state__desc">All leave requests have been reviewed. Check back later.</div>
+  </div>
+</div>

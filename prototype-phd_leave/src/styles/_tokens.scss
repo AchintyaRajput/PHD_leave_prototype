@@ -1,0 +1,75 @@
+// Design Tokens — AXIS PhD Leave Module
+// Based on design.md + TRD AXIS-PHD-TRD-v1.0
+
+:root {
+  // ── Primary Brand Colors ────────────────────
+  --color-primary:          #006565;
+  --color-primary-dark:     #004d4d;
+  --color-primary-light:    #e0f2f2;
+  --color-primary-container:#008080;
+  --color-primary-50:       rgba(0, 101, 101, 0.08);
+  --color-primary-10:       rgba(0, 101, 101, 0.04);
+  --on-primary:             #ffffff;
+  --on-primary-container:   #E3FFFE;
+  --inverse-primary:        #76D6D5;
+
+  // ── Surface & Background (Tonal Layering) ───
+  --color-bg:               #f4f7f9;
+  --color-surface:          #ffffff;
+  --color-border:           #e0e4ea;
+
+  // ── Typography Colors ───────────────────────
+  --color-text-primary:     #1c2b3a;
+  --color-text-secondary:   #6b7a8d;
+  --color-text-muted:       #9ca3af;
+
+  // ── Semantic Status ─────────────────────────
+  --color-success-bg:       #e8f5e9;
+  --color-success-text:     #1b5e20;
+  --color-warning-bg:       #fff8e1;
+  --color-warning-text:     #f57f17;
+  --color-danger-bg:        #ffebee;
+  --color-danger-text:      #c62828;
+  --color-neutral-bg:       #f3f4f6;
+  --color-neutral-text:     #6b7280;
+
+  // ── Spacing ─────────────────────────────────
+  --space-xs:  4px;
+  --space-sm:  8px;
+  --space-md:  16px;
+  --space-lg:  24px;
+  --space-xl:  32px;
+  --space-2xl: 48px;
+
+  // ── Layout ──────────────────────────────────
+  --sidebar-width: 250px;
+  --container-padding: 32px;
+  --page-max-width: 1280px;
+
+  // ── Radius ──────────────────────────────────
+  --radius-sm:   6px;
+  --radius-md:   10px;
+  --radius-lg:   14px;
+  --radius-pill: 9999px;
+
+  // ── Shadows ─────────────────────────────────
+  --shadow-card:     0 4px 20px rgba(0, 0, 0, 0.08);
+  --shadow-md:       0 4px 12px rgba(0, 0, 0, 0.06);
+  --shadow-lg:       0 8px 24px rgba(0, 0, 0, 0.08);
+  --shadow-focus:    0 0 0 3px rgba(0, 101, 101, 0.2);
+
+  // ── Typography ──────────────────────────────
+  --font-sans: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  --font-size-xs:   11px;
+  --font-size-sm:   13px;
+  --font-size-base: 14px;
+  --font-size-md:   16px;
+  --font-size-lg:   20px;
+  --font-size-xl:   24px;
+  --font-size-2xl:  28px;
+
+  // ── Transitions ─────────────────────────────
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+}

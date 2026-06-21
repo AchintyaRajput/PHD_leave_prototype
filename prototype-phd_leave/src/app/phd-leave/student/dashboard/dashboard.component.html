@@ -1,0 +1,45 @@
+<div class="dashboard animate-in">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-header__left">
+      <h1 class="page-header__title" id="dashboard-heading">Leave Balance Dashboard</h1>
+    </div>
+  </div>
+
+  <!-- Table Section -->
+  <div class="table-card">
+    <table class="balance-table">
+      <thead>
+        <tr>
+          <th>Leave Type</th>
+          <th class="text-center">Credited</th>
+          <th class="text-center">Availed</th>
+          <th class="text-center">Balance</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let balance of balances" [class.highlight-row]="balance.leaveType === 'Work / On-Duty Leave'">
+          <td class="font-medium">{{ balance.leaveType }}</td>
+          <td class="text-center">{{ balance.isUnlimited ? 'Unlimited' : (balance.credited | number:'1.1-1') }}</td>
+          <td class="text-center">{{ balance.availed | number:'1.1-1' }}</td>
+          <td class="text-center font-bold">{{ balance.isUnlimited ? '—' : (balance.balance | number:'1.1-1') }}</td>
+          <td class="text-right"><button class="btn-details">Details</button></td>
+        </tr>
+        <!-- Total Row -->
+        <tr class="total-row">
+          <td class="font-bold">Total Leaves</td>
+          <td class="text-center font-bold">{{ totalCredited | number:'1.1-1' }}</td>
+          <td class="text-center font-bold">{{ totalAvailed | number:'1.1-1' }}</td>
+          <td class="text-center font-bold">{{ totalBalance | number:'1.1-1' }}</td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Full Width Apply Button -->
+  <a routerLink="/phd-leave/apply" class="btn-full-apply" id="quick-apply-btn">
+    Apply for Leave +
+  </a>
+</div>

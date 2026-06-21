@@ -1,0 +1,116 @@
+.dashboard {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.page-header {
+  margin-bottom: var(--space-xl);
+  
+  &__left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  &__title {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--color-primary-dark);
+    letter-spacing: -0.02em;
+  }
+
+  &__subtitle {
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    color: var(--color-text-secondary);
+  }
+}
+
+.table-card {
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+  margin-bottom: var(--space-lg);
+}
+
+.balance-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th, td {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text-primary);
+    font-size: 16px;
+  }
+
+  th {
+    background: var(--color-surface);
+    font-weight: 600;
+    text-align: left;
+    color: var(--color-text-primary);
+  }
+
+  .text-center { text-align: center; }
+  .text-right { text-align: right; }
+  .font-medium { font-weight: 500; }
+  .font-bold { font-weight: 700; }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+
+  .highlight-row {
+    background-color: rgba(0, 101, 101, 0.06);
+  }
+
+  .total-row {
+    background: #E7E8E9;
+    td {
+      font-weight: 700;
+    }
+  }
+}
+
+.btn-full-apply {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(90deg, #004D40 0%, #008080 100%);
+  color: #fff;
+  font-weight: 600;
+  font-size: var(--font-size-base);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  transition: opacity var(--transition-fast), transform var(--transition-fast);
+  box-shadow: 0 4px 12px rgba(0, 77, 64, 0.2);
+
+  &:hover {
+    opacity: 0.95;
+    transform: translateY(-1px);
+    text-decoration: none;
+    color: #fff;
+  }
+}
+
+.btn-details {
+  padding: 8px 16px;
+  background: linear-gradient(90deg, #004D40 0%, #008080 100%);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.75em;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: opacity var(--transition-fast), transform var(--transition-fast);
+  box-shadow: 0 2px 6px rgba(0, 77, 64, 0.2);
+
+  &:hover {
+    opacity: 0.95;
+    transform: translateY(-1px);
+  }
+}

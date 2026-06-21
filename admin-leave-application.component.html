@@ -1,0 +1,439 @@
+<div class="form">
+
+    <!-- HEADER -->
+    <div class="sticky-header">
+
+        <!-- CENTER TITLE + SYNC -->
+        <div class="header-center">
+            <h1>
+            Medical Leave Applications
+
+            <button class="sync-btn"
+                    (click)="syncLeaves()"
+                    [disabled]="isLoading"
+                    title="Sync from Google Spreadsheet">
+
+                <i class="fa-solid fa-sync"
+                [ngClass]="{'fa-spin': isLoading}">
+                </i>
+
+                Sync
+            </button>
+            </h1>
+        </div>
+
+        <!-- RIGHT BUTTON -->
+        <a class="sheet-btn"
+            href="https://docs.google.com/spreadsheets/d/16FCAQh6cpH8vZx36A8Cc_IROKqjp9knsYBEp83Q3maM/edit?gid=0#gid=0"
+            target="_blank">
+
+            <i class="fa-solid fa-table"></i>
+            Student Leave Data
+
+        </a>
+
+     </div>
+
+
+    <!-- Academic Calendar -->
+    <div class="exam-config-card">
+
+        <div class="header">
+            <h3>Academic Calendar</h3>
+
+            <button class="edit-btn"
+                (click)="isEditingDates ? saveSemesterConfig() : (isEditingDates = true)">
+
+                <i class="fa-solid fa-pen"></i>
+                {{ isEditingDates ? 'Save' : 'Modify' }}
+
+            </button>
+        </div>
+
+        <div class="grid">
+
+            <div>
+                <strong>Semester</strong>
+
+                <div *ngIf="!isEditingDates">
+                    {{ semesterConfig.semester.start | date:'mediumDate' }}
+                    →
+                    {{ semesterConfig.semester.end | date:'mediumDate' }}
+                </div>
+
+                <div *ngIf="isEditingDates">
+                    <input type="date" [(ngModel)]="semesterConfig.semester.start">
+                    <input type="date" [(ngModel)]="semesterConfig.semester.end">
+                </div>
+            </div>
+
+
+            <div>
+                <strong>Midsem</strong>
+
+                <div *ngIf="!isEditingDates">
+                    {{ semesterConfig.midsem.start | date:'mediumDate' }}
+                    →
+                    {{ semesterConfig.midsem.end | date:'mediumDate' }}
+                </div>
+
+                <div *ngIf="isEditingDates">
+                    <input type="date" [(ngModel)]="semesterConfig.midsem.start">
+                    <input type="date" [(ngModel)]="semesterConfig.midsem.end">
+                </div>
+            </div>
+
+
+            <div>
+                <strong>Endsem</strong>
+
+                <div *ngIf="!isEditingDates">
+                    {{ semesterConfig.endsem.start | date:'mediumDate' }}
+                    →
+                    {{ semesterConfig.endsem.end | date:'mediumDate' }}
+                </div>
+
+                <div *ngIf="isEditingDates">
+                    <input type="date" [(ngModel)]="semesterConfig.endsem.start">
+                    <input type="date" [(ngModel)]="semesterConfig.endsem.end">
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- FILTER BAR (NOW OUTSIDE TABLE SCROLL) -->
+    <div class="place-maker">
+
+        <div class="board-header">
+
+        <h3>
+            <i class="fa-solid fa-file-medical"></i>
+            Leave Requests Board
+        </h3>
+
+        <div class="roll-search">
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+            <input
+                type="text"
+                placeholder="Search Roll Number"
+                [(ngModel)]="rollNoFilter"
+            />
+
+        </div>
+
+    </div>
+
+        <div class="filter-buttons">
+
+            <button
+                [class.active]="filterStatus === 'All'"
+                (click)="setFilter('All')">
+                All
+            </button>
+
+            <button
+                [class.active]="filterStatus === 'Pending'"
+                (click)="setFilter('Pending')">
+                Admin Pending
+            </button>
+
+            <button
+                [class.active]="filterStatus === 'Approved'"
+                (click)="setFilter('Approved')">
+                Admin Approved
+            </button>
+
+            <button
+                [class.active]="filterStatus === 'Rejected'"
+                (click)="setFilter('Rejected')">
+                Admin Rejected
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- TABLE SCROLL AREA -->
+    <div class="table-wrapper">
+
+        <table *ngIf="filteredLeaveRequests.length > 0">
+
+            <thead>
+
+                <tr>
+                    <th>S.No.</th>
+                    <th>Applied On</th>
+                    <th>Name</th>
+                    <th>Roll No</th>
+                    <th>Program</th>
+                    <th>Courses</th>
+                    <th>Instructor</th>
+                    <th>From Date</th>
+                    <th>To Date</th>
+                    <th>Document</th>
+                    <th>Eligibility</th>
+                    <th>Infirmary Approval</th>
+                    <th>UGC Approval</th>
+                    <th>Admin Approval</th>
+                    <th>Notify</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <tr *ngFor="let request of filteredLeaveRequests; let i = index">
+
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ request.createdAt | date:'d MMM, y' }}</td>
+                    <td>{{ request.name }}</td>
+                    <td>{{ request.rollNo }}</td>
+                    <td>{{ request.program || '-' }}</td>
+
+                    <td>{{ getCourseList(request) }}</td>
+                    <td>{{ getInstructorList(request) }}</td>
+
+                    <td>{{ request.leaveFrom | date:'d MMM, y' }}</td>
+                    <td>{{ request.leaveTo | date:'d MMM, y' }}</td>
+
+
+                    <td>
+
+                        <a
+                            [href]="request.document"
+                            target="_blank"
+                            class="doc-link"
+                            *ngIf="request.document">
+
+                            <i class="fa-solid fa-file-pdf"></i>
+                            View
+
+                        </a>
+
+                        <span *ngIf="!request.document">-</span>
+
+                    </td>
+
+
+                    <td>
+
+                        <span
+                            [class.status-approved]="request.eligibility?.status === 'Eligible'"
+                            [class.status-rejected]="request.eligibility?.status === 'Not Eligible'"
+                            (click)="openEligibilityModal(request)"
+                            style="cursor:pointer;">
+
+                            {{ request.eligibility?.status }}
+
+                        </span>
+
+                    </td>
+
+
+                    <td>
+
+                        <div class="status-col">
+
+                        <span class="status-badge"
+                            [ngClass]="{
+                            'status-pending': request.infirmaryStatus === 'Pending' || !request.infirmaryStatus,
+                            'status-approved': request.infirmaryStatus === 'Approved' || request.infirmaryStatus === 'Partial',
+                            'status-rejected': request.infirmaryStatus === 'Rejected'
+                            }">
+
+                        {{ request.infirmaryStatus || 'Pending' }}
+
+                        </span>
+
+                        <div *ngIf="request.infirmaryDetails?.approvedFrom && request.infirmaryDetails?.approvedTo"
+                            class="details-box">
+
+                        <div>
+                            <strong>Duration:</strong>
+                            {{ request.infirmaryDetails!.approvedFrom | date:'d MMM, y' }}
+                            →
+                            {{ request.infirmaryDetails!.approvedTo | date:'d MMM, y' }}
+                            ({{ calculateDuration(request.infirmaryDetails!.approvedFrom!, request.infirmaryDetails!.approvedTo!) }} days)
+                        </div>
+
+                        <div *ngIf="request.infirmaryDetails?.reason">
+                            <strong>Reason:</strong>
+                            {{ request.infirmaryDetails!.reason }}
+                        </div>
+
+                        </div>
+                        </div>
+
+                    </td>
+
+                    <td>
+
+                        <div class="status-col">
+
+                        <span class="status-badge"
+                            [ngClass]="{
+                            'status-pending': request.ugcStatus === 'Pending',
+                            'status-approved': request.ugcStatus === 'Approved' || request.ugcStatus === 'Partial',
+                            'status-rejected': request.ugcStatus === 'Rejected'
+                            }">
+
+                        {{ request.ugcStatus }}
+
+                        </span>
+
+                        <div *ngIf="request.ugcDetails?.approvedFrom && request.ugcDetails?.approvedTo"
+                            class="details-box">
+
+                        <div>
+                            <strong>Duration:</strong>
+                            {{ request.ugcDetails!.approvedFrom | date:'d MMM, y' }}
+                            →
+                            {{ request.ugcDetails!.approvedTo | date:'d MMM, y' }}
+                            ({{ calculateDuration(request.ugcDetails!.approvedFrom!, request.ugcDetails!.approvedTo!) }} days)
+                        </div>
+
+                        <div *ngIf="request.ugcDetails?.reason">
+                            <strong>Reason:</strong>
+                            {{ request.ugcDetails!.reason }}
+                        </div>
+
+                        </div>
+
+                        </div>
+
+                    </td>
+
+
+                    <td>
+
+                        <div class="status-col">
+
+                            <span class="status-badge"
+                                  [ngClass]="{
+                                  'status-pending': request.adminStatus === 'Pending',
+                                  'status-approved': request.adminStatus === 'Approved',
+                                  'status-rejected': request.adminStatus === 'Rejected'
+                                  }">
+
+                                {{ request.adminStatus }}
+
+                            </span>
+
+                            <div class="action-buttons"
+                                 *ngIf="request.adminStatus === 'Pending'">
+
+                                <button class="btn-approve"
+                                        (click)="updateLocalStatus(request,'admin','Approved')">
+                                    <i class="fa-solid fa-check"></i>
+                                </button>
+
+                                <button class="btn-reject"
+                                        (click)="updateLocalStatus(request,'admin','Rejected')">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </td>
+
+
+                    <td>
+
+                        <button
+                            class="email-btn"
+                            [disabled]="!canSendEmail(request)"
+                            (click)="sendEmailPlaceholder()"
+                            title="Send Email">
+
+                            <i class="fa-solid fa-envelope"></i>
+
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+
+        <div *ngIf="leaveRequests.length === 0"
+             class="no-tasks-message">
+
+            No leave applications found.
+
+        </div>
+
+    </div>
+
+    <div class="modal-overlay"
+     *ngIf="showEligibilityModal"
+     (click)="closeEligibilityModal()">
+
+  <div class="modal-content"
+       (click)="$event.stopPropagation()">
+
+    <div class="modal-header">
+      <h2>Eligibility Details</h2>
+
+      <button class="close-btn"
+              (click)="closeEligibilityModal()">
+        &times;
+      </button>
+    </div>
+
+    <div class="modal-body"
+         *ngIf="selectedEligibilityData">
+
+      <p><strong>Name:</strong> {{ selectedEligibilityData.name }}</p>
+
+      <p><strong>Total Leaves This Semester:</strong>
+        {{ selectedEligibilityData.snapshot?.totalLeaves }}
+      </p>
+
+      <p><strong>Total Leave Days Used:</strong>
+        {{ selectedEligibilityData.snapshot?.totalDays }}
+      </p>
+
+      <p><strong>Exam Leaves Taken:</strong>
+        {{ selectedEligibilityData.snapshot?.examLeaves }}
+      </p>
+
+      <p><strong>Remaining Days:</strong>
+        {{ 20 - (selectedEligibilityData.snapshot?.totalDays || 0) }}
+      </p>
+
+      <div *ngIf="selectedEligibilityData.eligible"
+           class="status-approved mt-3">
+        ✔ Student is eligible for medical leave.
+      </div>
+
+      <div *ngIf="!selectedEligibilityData.eligible"
+           class="status-rejected mt-3">
+
+        <strong>Reasons:</strong>
+
+        <ul>
+          <li *ngFor="let reason of selectedEligibilityData.reasons">
+            {{ reason }}
+          </li>
+        </ul>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+</div>

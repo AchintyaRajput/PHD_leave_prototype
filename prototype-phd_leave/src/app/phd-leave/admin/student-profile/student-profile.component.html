@@ -1,0 +1,200 @@
+<div class="student-profile animate-in" *ngIf="student">
+  <!-- Back Link -->
+  <a routerLink="/admin/phd-leave/search" class="back-link" id="back-to-search">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+    </svg>
+    Back to Directory
+  </a>
+
+  <!-- Student Header Card -->
+  <div class="profile-header">
+    <div class="profile-header__avatar">{{ student.initials }}</div>
+    <div class="profile-header__info">
+      <h1 class="profile-header__name" id="profile-name">{{ student.name }}</h1>
+      <div class="profile-header__meta">
+        <span class="profile-header__tag">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+          {{ student.rollNumber }}
+        </span>
+        <span class="profile-header__tag">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 10 3 12 0v-5"/>
+          </svg>
+          {{ student.program }} · {{ student.department }}
+        </span>
+        <span class="profile-header__tag">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 00-3-3.87"/>
+            <path d="M16 3.13a4 4 0 010 7.75"/>
+          </svg>
+          Advisor: {{ student.advisor }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Two-Column: Leave Credits + Pending Request -->
+  <div class="profile-content">
+    <!-- Left: Leave Balance Grid -->
+    <div class="balance-section">
+      <h2 class="section-title">Leave Credits</h2>
+      <div class="table-card">
+        <table class="balance-table">
+          <thead>
+            <tr>
+              <th>Leave Type</th>
+              <th class="text-center">Credited</th>
+              <th class="text-center">Availed</th>
+              <th class="text-center">Balance</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let balance of balances" [class.highlight-row]="balance.leaveType === 'Work / On-Duty Leave'">
+              <td class="font-medium">{{ balance.leaveType }}</td>
+              <td class="text-center">{{ balance.isUnlimited ? 'Unlimited' : (balance.credited | number:'1.1-1') }}</td>
+              <td class="text-center">{{ balance.availed | number:'1.1-1' }}</td>
+              <td class="text-center font-bold">{{ balance.isUnlimited ? '—' : (balance.balance | number:'1.1-1') }}</td>
+            </tr>
+            <!-- Total Row -->
+            <tr class="total-row">
+              <td class="font-bold">Total Leaves</td>
+              <td class="text-center font-bold">{{ totalCredited | number:'1.1-1' }}</td>
+              <td class="text-center font-bold">{{ totalAvailed | number:'1.1-1' }}</td>
+              <td class="text-center font-bold">{{ totalBalance | number:'1.1-1' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Right: Pending Request -->
+    <div class="pending-section">
+      <h2 class="section-title">Pending Request</h2>
+      <div class="pending-box" *ngIf="pendingRequest; else noPending">
+        <div class="pending-box__type">{{ pendingRequest.leaveType }}</div>
+        <div class="pending-box__dates">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+          </svg>
+          {{ formatDateRange(pendingRequest) }}
+        </div>
+        <div class="pending-box__duration">{{ formatDuration(pendingRequest) }}</div>
+        <div class="pending-box__reason">
+          <strong>Reason:</strong> {{ pendingRequest.reason }}
+        </div>
+        <div class="pending-box__doc" *ngIf="pendingRequest.documentUrl">
+          <button class="doc-link" (click)="openDocument(pendingRequest.documentUrl!)" id="pending-doc-link">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/>
+            </svg>
+            View Document
+          </button>
+        </div>
+        <div class="pending-box__status">
+          <app-status-pill [status]="pendingRequest.status"></app-status-pill>
+        </div>
+        <div class="pending-box__actions">
+          <button class="btn btn-primary" (click)="approveRequest()" id="approve-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            Approve
+          </button>
+          <button class="btn btn-reject" (click)="rejectRequest()" id="reject-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+            Reject
+          </button>
+        </div>
+      </div>
+      <ng-template #noPending>
+        <div class="pending-box pending-box--empty">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+          </svg>
+          <span>No pending requests</span>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+
+  <!-- Previous Leaves Table -->
+  <div class="history-section">
+    <h2 class="section-title">Previous Leaves</h2>
+
+    <div class="table-section" *ngIf="applications.length > 0">
+      <div class="table-scroll">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Leave Type</th>
+              <th>Applied On</th>
+              <th>From Date</th>
+              <th>To Date</th>
+              <th>Duration</th>
+              <th>Current Status</th>
+              <th>Document</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let app of applications">
+              <td class="td-type">{{ app.leaveType }}</td>
+              <td>{{ app.appliedOn | date:'d MMM yyyy' }}</td>
+              <td>{{ app.fromDate | date:'d MMM yyyy' }}</td>
+              <td>{{ app.toDate | date:'d MMM yyyy' }}</td>
+              <td>{{ formatDuration(app) }}</td>
+              <td>
+                <app-status-pill [status]="app.status"></app-status-pill>
+              </td>
+              <td>
+                <button
+                  *ngIf="isMedicalLeave(app) && app.documentUrl"
+                  class="table-doc-link"
+                  (click)="openDocument(app.documentUrl)"
+                  type="button"
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+                  </svg>
+                </button>
+                <span *ngIf="!(isMedicalLeave(app) && app.documentUrl)" class="td-no-doc">—</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="applications.length === 0">
+      <div class="empty-state__icon">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+        </svg>
+      </div>
+      <div class="empty-state__title">No leave history found.</div>
+      <div class="empty-state__desc">This student has not applied for any leaves yet.</div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div
+  class="toast"
+  [class.show]="showToast"
+  [ngClass]="'toast--' + toastType"
+>
+  <svg *ngIf="toastType === 'success'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="20 6 9 17 4 12"/>
+  </svg>
+  <svg *ngIf="toastType === 'error'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>
+  </svg>
+  {{ toastMessage }}
+</div>
